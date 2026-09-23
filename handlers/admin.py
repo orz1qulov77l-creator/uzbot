@@ -1,4 +1,4 @@
-[9/23/2026 6:01 PM] Orziqulov Toxtasin: """Admin panel: kino, kanal, admin, narx, statistika, xabar va reklama boshqaruvi."""
+"""Admin panel: kino, kanal, admin, narx, statistika, xabar va reklama boshqaruvi."""
 import asyncio
 from datetime import datetime, timedelta
 
