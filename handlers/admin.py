@@ -1,4 +1,4 @@
-"""Admin panel: kino, kanal, admin, narx, statistika, xabar va reklama boshqaruvi."""
+"""An panel: kino, kanal, admin, narx, statistika, xabar va reklama boshqaruvi."""
 import asyncio
 from datetime import datetime, timedelta
 
@@ -101,7 +101,9 @@ async def add_movie_description(message: Message, state: FSMContext) -> None:
     await state.update_data(description="" if text == "-" else text)
     await state.set_state(st.AddMovie.video)
     await message.answer("🎥 Kino videosini (mp4 fayl) yuboring:")
-    async def add_movie_video(message: Message, state: FSMContext) -> None:
+
+
+async def add_movie_video(message: Message, state: FSMContext) -> None:
     file_id = None
     if message.video:
         file_id = message.video.file_id
@@ -202,7 +204,9 @@ async def edit_movie_choose_field(callback: CallbackQuery, state: FSMContext, ow
         "poster_file_id": "Yangi bannerni (rasm) yuboring:",
     }
     await callback.message.answer(prompts[field])
-[9/23/2026 6:01 PM] Orziqulov Toxtasin: async def edit_movie_tariff_value(callback: CallbackQuery, state: FSMContext, owner_id: int) -> None:
+
+
+async def edit_movie_tariff_value(callback: CallbackQuery, state: FSMContext, owner_id: int) -> None:
     tariff = callback.data.split(":")[1]
     data = await state.get_data()
     db.update_movie_field(owner_id, data["code"], "tariff", tariff)
@@ -290,7 +294,7 @@ async def topup_amount(message: Message, state: FSMContext, owner_id: int, bot: 
 
 
 # ============================================================ 4. PREMIUM BERISH
-[9/23/2026 6:01 PM] Orziqulov Toxtasin: async def give_premium_start(callback: CallbackQuery, state: FSMContext, owner_id: int) -> None:
+async def give_premium_start(callback: CallbackQuery, state: FSMContext, owner_id: int) -> None:
     if not await _require_admin(callback, owner_id):
         return
     await callback.answer()
@@ -384,7 +388,10 @@ async def add_channel_start(callback: CallbackQuery, state: FSMContext, owner_id
     await callback.message.answer(
         "📢 Kanal uchun tugma nomini kiriting (masalan: Yangiliklar kanali):",
         reply_markup=kb.cancel_kb(),
-    ) async def add_channel_name(message: Message, state: FSMContext) -> None:
+    )
+
+
+async def add_channel_name(message: Message, state: FSMContext) -> None:
     await state.update_data(name=(message.text or "").strip())
     await state.set_state(st.AddChannel.link)
     await message.answer("🔗 Kanal linkini kiriting (https://t.me/... yoki @username):")
@@ -473,7 +480,7 @@ async def stats_show(callback: CallbackQuery, owner_id: int) -> None:
     await callback.answer()
 
     if kind == "all":
-    users = db.list_users(owner_id)
+        users = db.list_users(owner_id)
         header = f"👥 <b>Barcha foydalanuvchilar</b> — jami: {len(users)}\n\n"
         rows = users[:30]
         text = header + "\n".join(format_user_row(u) for u in rows)
@@ -557,7 +564,9 @@ async def edit_admin_start(callback: CallbackQuery, state: FSMContext, owner_id:
     await callback.answer()
     admins = db.list_admins(owner_id)
     await callback.message.answer("🛠 Tahrirlamoqchi bo'lgan adminni tanlang:", reply_markup=kb.admins_list_kb(admins))
-    async def edit_admin_choose(callback: CallbackQuery, state: FSMContext) -> None:
+
+
+async def edit_admin_choose(callback: CallbackQuery, state: FSMContext) -> None:
     user_id = int(callback.data.split(":")[1])
     await state.update_data(target_id=user_id)
     await callback.answer()
@@ -643,7 +652,7 @@ async def ads_choose_type(callback: CallbackQuery, state: FSMContext, owner_id: 
         await callback.message.answer("✅ Reklama o'chirildi.", reply_markup=kb.back_to_admin_kb())
         return
     await state.update_data(ad_type=ad_type)
- await state.set_state(st.AdSettings.waiting_content)
+    await state.set_state(st.AdSettings.waiting_content)
     if ad_type == "text":
         await callback.message.answer("📝 Reklama matnini yuboring:")
     elif ad_type == "photo":
@@ -734,7 +743,9 @@ async def edit_start_msg_start(callback: CallbackQuery, state: FSMContext, owner
         "\"()\" belgisini qo'ying.\n\nMasalan: Salom! () Xush kelibsiz botga.",
         reply_markup=kb.cancel_kb(),
     )
-[ async def edit_start_msg_value(message: Message, state: FSMContext, owner_id: int) -> None:
+
+
+async def edit_start_msg_value(message: Message, state: FSMContext, owner_id: int) -> None:
     db.set_setting(owner_id, "START_MESSAGE", message.text or "")
     await state.clear()
     await message.answer("✅ Start xabari yangilandi.", reply_markup=kb.back_to_admin_kb())
@@ -800,6 +811,7 @@ def register(router: Router) -> None:
     router.callback_query.register(ads_choose_type, F.data.startswith("adtype:"))
     router.message.register(ads_content, st.AdSettings.waiting_content)
     router.message.register(ads_button, st.AdSettings.waiting_button)
+
     router.callback_query.register(edit_texts_start, F.data == "adm:edit_texts")
     router.callback_query.register(edit_texts_choose, F.data.startswith("edittxt:"))
     router.message.register(edit_texts_value, st.EditTexts.new_value)
