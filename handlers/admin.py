@@ -114,7 +114,7 @@ async def add_movie_video(message: Message, state: FSMContext) -> None:
         return
     await state.update_data(video_file_id=file_id)
     await state.set_state(st.AddMovie.poster)
-    await message.answer("🖼 Kino banerini (rasm) yuboring (yo'q bo'lsa \"-\" yozing):")
+    await message.answer("🖼 Kino banerini (rasm) yuboring (yo'q bo'lsa \1\ yozing):")
 
 
 async def add_movie_poster(message: Message, state: FSMContext) -> None:
@@ -123,7 +123,7 @@ async def add_movie_poster(message: Message, state: FSMContext) -> None:
     elif message.photo:
         await state.update_data(poster_file_id=message.photo[-1].file_id)
     else:
-        await message.answer("❗️ Rasm yuboring yoki bannersiz o'tish uchun \"-\" yozing:")
+        await message.answer("❗️ Rasm yuboring yoki bannersiz o'tish uchun \1\ yozing:")
         return
     await state.set_state(st.AddMovie.tariff)
     await message.answer("💳 Kino tarifini tanlang:", reply_markup=kb.tariff_choice_kb("newmovie_tariff"))
